@@ -1,0 +1,258 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DeviceGuard | Behavioral Fingerprinting</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js library for analytics graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">⌁</div>
+            <div>
+                <h2>DeviceGuard</h2>
+                <span>IOT SECURITY SYSTEM</span>
+            </div>
+        </div>
+
+        <nav>
+            <a href="#overview" class="nav-link active">▦ &nbsp; Overview</a>
+            <a href="#analytics" class="nav-link">◎ &nbsp; Device Metrics</a>
+            <a href="#analytics" class="nav-link">⌁ &nbsp; Analytics</a>
+            <a href="#history" class="nav-link">▤ &nbsp; Detection History</a>
+            <a href="#about" class="nav-link">ⓘ &nbsp; About Project</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <span class="status-dot"></span>
+            Offline / Saved Data Mode
+            <p>ESP32 + Random Forest ML</p>
+        </div>
+    </aside>
+
+    <!-- Main Dashboard -->
+    <main class="main-content">
+
+        <!-- Page heading -->
+        <header class="topbar" id="overview">
+            <div>
+                <div class="eyebrow">IOT SECURITY / MONITORING</div>
+                <h1>Behavioral Fingerprinting</h1>
+                <p class="muted">
+                    Wi-Fi device analysis and detection overview
+                </p>
+            </div>
+
+            <div class="mode-badge">
+                <span class="status-dot"></span>
+                DEMO MODE
+            </div>
+        </header>
+
+        <!-- Saved-data notice -->
+        <section class="notice">
+            <strong>Saved-data demonstration</strong>
+            <p>
+                This webpage displays saved measurements and model results.
+                It is not currently connected to the live ESP32 serial stream.
+            </p>
+        </section>
+
+        <!-- Summary Cards -->
+        <section class="stats-grid">
+
+            <article class="stat-card">
+                <div class="stat-label">TOTAL RECORDS</div>
+                <div class="stat-value" id="totalRecords">--</div>
+                <p>Saved detection entries</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-label">MOST PREDICTED</div>
+                <div class="stat-value" id="mostPredicted">--</div>
+                <p>From loaded records</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-label">AVG. CONFIDENCE</div>
+                <div class="stat-value" id="avgConfidence">--</div>
+                <p>Model confidence, not accuracy</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-label">LOW CONFIDENCE</div>
+                <div class="stat-value warning-text" id="lowConfidence">--</div>
+                <p>Below configured 70% threshold</p>
+            </article>
+
+        </section>
+
+        <!-- Analytics -->
+        <section class="panel" id="analytics">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Behavioral Analytics</h2>
+                    <p class="muted">
+                        Measurements from your detection log
+                    </p>
+                </div>
+
+                <span class="small-badge">CSV DATA</span>
+            </div>
+
+            <div class="chart-grid">
+
+                <article class="chart-card">
+                    <h3>Frame Size</h3>
+                    <canvas id="packetChart"></canvas>
+                </article>
+
+                <article class="chart-card">
+                    <h3>Inter-Arrival Time</h3>
+                    <canvas id="iatChart"></canvas>
+                </article>
+
+                <article class="chart-card">
+                    <h3>Frame Frequency</h3>
+                    <canvas id="frequencyChart"></canvas>
+                </article>
+
+                <article class="chart-card">
+                    <h3>Prediction Confidence</h3>
+                    <canvas id="confidenceChart"></canvas>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- Detection History -->
+        <section class="panel" id="history">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Detection History</h2>
+                    <p class="muted">
+                        Recent entries from detections.csv
+                    </p>
+                </div>
+
+                <label class="upload-button" for="csvFile">
+                    Load CSV
+                    <input
+                        type="file"
+                        id="csvFile"
+                        accept=".csv,text/csv"
+                    >
+                </label>
+            </div>
+
+            <p class="helper-text" id="loadMessage" aria-live="polite">
+                Choose your existing detections.csv file.
+                The file is read locally in your browser.
+            </p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Predicted Device</th>
+                            <th>Size (bytes)</th>
+                            <th>IAT (ms)</th>
+                            <th>Frequency</th>
+                            <th>Confidence</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="historyBody">
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                Load detections.csv to display your records.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="helper-text">
+                Showing up to the latest 15 records from the selected CSV.
+            </p>
+
+        </section>
+
+        <!-- About Project -->
+        <section class="panel" id="about">
+
+            <div class="section-heading">
+                <div>
+                    <h2>About the Project</h2>
+                    <p class="muted">
+                        ESP32-based behavioral device fingerprinting
+                    </p>
+                </div>
+            </div>
+
+            <div class="about-grid">
+
+                <div>
+                    <h3>Project Objective</h3>
+                    <p>
+                        Analyze Wi-Fi traffic characteristics such as packet
+                        size, inter-arrival time, and frame frequency to
+                        investigate device identification using machine learning.
+                    </p>
+                </div>
+
+                <div>
+                    <h3>Technology Stack</h3>
+                    <p>
+                        ESP32, Python, Random Forest, scikit-learn,
+                        CSV data logging, HTML, CSS, JavaScript, and Chart.js.
+                    </p>
+                </div>
+
+                <div>
+                    <h3>Machine Learning</h3>
+                    <p>
+                        The trained model predicts the device classes
+                        represented in its training data. Confidence is a
+                        model score and does not guarantee prediction accuracy.
+                    </p>
+                </div>
+
+                <div>
+                    <h3>Current Limitation</h3>
+                    <p>
+                        This page reads a CSV file selected by the user.
+                        It does not receive live ESP32 data or independently
+                        verify whether a device is unauthorized.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <footer>
+            <span>DeviceGuard · Academic Project Demonstration</span>
+            <span>ESP32 + Machine Learning</span>
+        </footer>
+
+    </main>
+
+    <!-- Load application code after the HTML elements exist -->
+    <script src="script.js"></script>
+
+</body>
+</html>
